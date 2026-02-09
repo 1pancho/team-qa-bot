@@ -1,0 +1,25 @@
+{
+  "name": "team-qa-bot",
+  "version": "1.0.0",
+  "description": "Telegram bot for QA team workflow management with deployment tracking and bug assignments",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "keywords": ["telegram", "bot", "qa", "workflow"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "grammy": "^1.21.1",
+    "better-sqlite3": "^9.3.0",
+    "dotenv": "^16.4.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.9",
+    "@types/node": "^20.11.5",
+    "typescript": "^5.3.3",
+    "tsx": "^4.7.0"
+  }
+}
