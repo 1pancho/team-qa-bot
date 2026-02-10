@@ -4,6 +4,7 @@ import { config } from './config';
 import { getDatabase } from './database/db';
 import { setupUtilsHandlers } from './handlers/utils.handler';
 import { setupQAHandlers } from './handlers/qa.handler';
+import { setupRulesHandler } from './handlers/rules.handler';
 
 /**
  * Main bot initialization
@@ -25,6 +26,7 @@ async function main(): Promise<void> {
   // Setup handlers
   setupUtilsHandlers(bot);
   setupQAHandlers(bot);
+  setupRulesHandler(bot);
 
   // Global error handler
   bot.catch((err) => {
