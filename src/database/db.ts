@@ -18,7 +18,7 @@ export function getDatabase(): Database.Database {
     // Initialize schema
     initializeSchema();
 
-    console.log('✅ Database initialized successfully');
+    console.log('Database initialized successfully');
   }
 
   return db;
@@ -37,7 +37,7 @@ function initializeSchema(): void {
   // Execute schema SQL
   db.exec(schema);
 
-  console.log('✅ Database schema initialized');
+  console.log('Database schema initialized');
 }
 
 /**
@@ -126,7 +126,7 @@ export function closeDatabase(): void {
   if (db) {
     db.close();
     db = null;
-    console.log('✅ Database connection closed');
+    console.log('Database connection closed');
   }
 }
 

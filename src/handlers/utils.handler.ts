@@ -49,12 +49,12 @@ export function setupUtilsHandlers(bot: Bot<BotContext>): void {
 
       // Answer callback query with success message
       const typeLabel = deploymentType === 'ui' ? 'UI' : 'Backend';
-      await ctx.answerCallbackQuery(`✅ ${typeLabel} deployment recorded!`);
+      await ctx.answerCallbackQuery(`${typeLabel} deployment recorded!`);
 
       // Optionally edit the original message to show who deployed
       const userMention = createUserMention(user.id, user.first_name, user.username);
       await ctx.editMessageText(
-        `✅ ${userMention} deployed ${typeLabel} to IFT\n\nUse /deploy to track another deployment.`
+        `${userMention} deployed ${typeLabel} to IFT\n\nUse /deploy to track another deployment.`
       );
     } catch (error) {
       console.error('Error handling deployment:', error);
@@ -68,10 +68,10 @@ export function setupUtilsHandlers(bot: Bot<BotContext>): void {
  */
 async function showDeploymentButtons(ctx: BotContext): Promise<void> {
   const keyboard = new InlineKeyboard()
-    .text('UI deployed to IFT 🎨', 'deploy_ui')
-    .text('Backend deployed to IFT ⚙️', 'deploy_backend');
+    .text('UI deployed to IFT', 'deploy_ui')
+    .text('Backend deployed to IFT', 'deploy_backend');
 
-  await ctx.reply('📦 *Deployment Options*\n\nChoose deployment type:', {
+  await ctx.reply('*Deployment Options*\n\nChoose deployment type:', {
     reply_markup: keyboard,
     parse_mode: 'Markdown',
     message_thread_id: config.utilsTopicId,
@@ -90,9 +90,8 @@ async function sendDeploymentNotification(
 ): Promise<void> {
   const userMention = createUserMention(userId, firstName, username);
   const typeLabel = type === 'ui' ? 'UI' : 'Backend';
-  const emoji = type === 'ui' ? '🎨' : '⚙️';
 
-  const message = `🚀 ${emoji} *Deployment Alert*\n\n${userMention} deployed ${typeLabel} to IFT`;
+  const message = `*Deployment Alert*\n\n${userMention} deployed ${typeLabel} to IFT`;
 
   await bot.api.sendMessage(config.chatId, message, {
     message_thread_id: config.notificationsTopicId,

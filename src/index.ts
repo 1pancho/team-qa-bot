@@ -9,13 +9,13 @@ import { setupQAHandlers } from './handlers/qa.handler';
  * Main bot initialization
  */
 async function main(): Promise<void> {
-  console.log('🤖 Starting QA Bot...');
+  console.log('Starting QA Bot...');
 
   // Initialize database
   try {
     getDatabase();
   } catch (error) {
-    console.error('❌ Failed to initialize database:', error);
+    console.error('Failed to initialize database:', error);
     process.exit(1);
   }
 
@@ -28,25 +28,25 @@ async function main(): Promise<void> {
 
   // Global error handler
   bot.catch((err) => {
-    console.error('❌ Bot error:', err);
+    console.error('Bot error:', err);
   });
 
   // Log bot info
   const botInfo = await bot.api.getMe();
-  console.log(`✅ Bot started: @${botInfo.username}`);
-  console.log(`📋 Configuration:`);
+  console.log(`Bot started: @${botInfo.username}`);
+  console.log(`Configuration:`);
   console.log(`   - Chat ID: ${config.chatId}`);
   console.log(`   - Utils Topic ID: ${config.utilsTopicId}`);
   console.log(`   - QA Topic ID: ${config.qaTopicId}`);
   console.log(`   - Notifications Topic ID: ${config.notificationsTopicId}`);
 
   // Start polling
-  console.log('🔄 Starting polling...');
+  console.log('Starting polling...');
   await bot.start({
     onStart: () => {
-      console.log('✅ Bot is running and listening for updates!');
+      console.log('Bot is running and listening for updates!');
       console.log('');
-      console.log('📝 Available commands:');
+      console.log('Available commands:');
       console.log('   Utils topic:');
       console.log('     /start or /deploy - Show deployment buttons');
       console.log('   QA topic:');
@@ -59,28 +59,28 @@ async function main(): Promise<void> {
 
 // Handle graceful shutdown
 process.once('SIGINT', () => {
-  console.log('\n👋 Bot stopping...');
+  console.log('\nBot stopping...');
   process.exit(0);
 });
 
 process.once('SIGTERM', () => {
-  console.log('\n👋 Bot stopping...');
+  console.log('\nBot stopping...');
   process.exit(0);
 });
 
 // Handle uncaught errors
 process.on('uncaughtException', (error) => {
-  console.error('❌ Uncaught Exception:', error);
+  console.error('Uncaught Exception:', error);
   process.exit(1);
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
   process.exit(1);
 });
 
 // Start the bot
 main().catch((error) => {
-  console.error('❌ Failed to start bot:', error);
+  console.error('Failed to start bot:', error);
   process.exit(1);
 });

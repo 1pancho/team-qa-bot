@@ -119,14 +119,14 @@ export function setupQAHandlers(bot: Bot<BotContext>): void {
       );
 
       await ctx.editMessageText(
-        `✅ *Bug Assignment Completed*\n\n` +
+        `*Bug Assignment Completed*\n\n` +
           `Reporter: ${reporterMention}\n` +
           `Assigned to: ${assigneeMention}\n\n` +
           `Use /bugs to file more bugs.`,
         { parse_mode: 'Markdown' }
       );
 
-      await ctx.answerCallbackQuery('Bug assigned successfully! ✅');
+      await ctx.answerCallbackQuery('Bug assigned successfully!');
     } catch (error) {
       console.error('Error assigning bug:', error);
       await ctx.answerCallbackQuery('Error assigning bug');
@@ -138,9 +138,9 @@ export function setupQAHandlers(bot: Bot<BotContext>): void {
  * Show initial bug filing button
  */
 async function showBugFilingButton(ctx: BotContext): Promise<void> {
-  const keyboard = new InlineKeyboard().text('Filed bugs ➡️', 'filed_bugs');
+  const keyboard = new InlineKeyboard().text('Filed bugs', 'filed_bugs');
 
-  await ctx.reply('🐛 *Bug Tracking*\n\nClick below to assign bugs to team members:', {
+  await ctx.reply('*Bug Tracking*\n\nClick below to assign bugs to team members:', {
     reply_markup: keyboard,
     parse_mode: 'Markdown',
     message_thread_id: config.qaTopicId,
@@ -172,7 +172,7 @@ async function showUserSelectionKeyboard(
     }
   });
 
-  await ctx.editMessageText('🐛 *Assign bugs to:*\n\nSelect a team member:', {
+  await ctx.editMessageText('*Assign bugs to:*\n\nSelect a team member:', {
     reply_markup: keyboard,
     parse_mode: 'Markdown',
   });
@@ -194,7 +194,7 @@ async function sendBugAssignmentNotification(
   const assigneeMention = createUserMention(assigneeId, assigneeFirstName, assigneeUsername);
 
   const message =
-    `🐛 *Bug Assignment*\n\n` +
+    `*Bug Assignment*\n\n` +
     `${reporterMention} filed bugs assigned to ${assigneeMention}`;
 
   await bot.api.sendMessage(config.chatId, message, {
