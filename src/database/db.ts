@@ -30,7 +30,8 @@ export function getDatabase(): Database.Database {
 function initializeSchema(): void {
   if (!db) throw new Error('Database not initialized');
 
-  const schemaPath = join(__dirname, 'schema.sql');
+  // Use path from project root, not from dist folder
+  const schemaPath = join(__dirname, '../../src/database/schema.sql');
   const schema = readFileSync(schemaPath, 'utf-8');
 
   // Execute schema SQL
