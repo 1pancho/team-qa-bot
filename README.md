@@ -403,3 +403,7 @@ For issues or questions, check the console logs first. Most errors are related t
 ---
 
 Made with ❤️ for QA teams
+
+---
+
+**Bot Status:** 🟢 Deployed and Running
