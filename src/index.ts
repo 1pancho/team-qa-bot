@@ -48,11 +48,12 @@ async function main(): Promise<void> {
     onStart: () => {
       console.log('Bot is running and listening for updates!');
       console.log('');
-      console.log('Available commands:');
-      console.log('   Utils topic:');
-      console.log('     /start or /deploy - Show deployment buttons');
-      console.log('   QA topic:');
-      console.log('     /bugs or /filed - Show bug assignment button');
+      console.log('Setup commands (run once):');
+      console.log('   /setup_utils - Create pinned buttons in Utils topic');
+      console.log('   /setup_qa - Create pinned buttons in QA topic');
+      console.log('');
+      console.log('Users interact with pinned buttons in topics');
+      console.log('All notifications go to Notifications topic');
       console.log('');
       console.log('Press Ctrl+C to stop the bot');
     },

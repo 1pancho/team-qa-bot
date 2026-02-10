@@ -11,17 +11,11 @@ let utilsPinnedMessageId: number | null = null;
  * Setup Utils topic handlers
  */
 export function setupUtilsHandlers(bot: Bot<BotContext>): void {
-  // Command to show deployment buttons
-  bot.command('start', async (ctx) => {
+  // Setup command - creates and pins the permanent button message (run once)
+  bot.command('setup_utils', async (ctx) => {
     if (!isInTopic(ctx, config.utilsTopicId)) return;
 
-    await showDeploymentButtons(ctx);
-  });
-
-  bot.command('deploy', async (ctx) => {
-    if (!isInTopic(ctx, config.utilsTopicId)) return;
-
-    await showDeploymentButtons(ctx);
+    await createPinnedDeploymentButtons(ctx);
   });
 
   // Handle deployment button clicks
@@ -41,7 +35,7 @@ export function setupUtilsHandlers(bot: Bot<BotContext>): void {
       const userName = user.username || user.first_name;
       recordDeployment(deploymentType, user.id, userName);
 
-      // Send notification to Notifications topic
+      // Send notification to Notifications topic (only place where message appears)
       await sendDeploymentNotification(
         bot,
         deploymentType,
@@ -50,15 +44,9 @@ export function setupUtilsHandlers(bot: Bot<BotContext>): void {
         user.username
       );
 
-      // Answer callback query with success message
+      // Answer callback query with success message (no message editing - buttons stay visible)
       const typeLabel = deploymentType === 'ui' ? 'UI' : 'Backend';
       await ctx.answerCallbackQuery(`${typeLabel} deployment recorded!`);
-
-      // Optionally edit the original message to show who deployed
-      const userMention = createUserMention(user.id, user.first_name, user.username);
-      await ctx.editMessageText(
-        `${userMention} deployed ${typeLabel} to IFT\n\nUse /deploy to track another deployment.`
-      );
     } catch (error) {
       console.error('Error handling deployment:', error);
       await ctx.answerCallbackQuery('Error recording deployment');
@@ -67,48 +55,33 @@ export function setupUtilsHandlers(bot: Bot<BotContext>): void {
 }
 
 /**
- * Show deployment buttons in Utils topic
+ * Create and pin permanent deployment buttons (run once during setup)
  */
-async function showDeploymentButtons(ctx: BotContext): Promise<void> {
+async function createPinnedDeploymentButtons(ctx: BotContext): Promise<void> {
   const keyboard = new InlineKeyboard()
     .text('UI deployed to IFT', 'deploy_ui')
     .text('Backend deployed to IFT', 'deploy_backend');
 
   const messageText = '*Deployment Options*\n\nChoose deployment type:';
 
-  // Try to edit existing pinned message if it exists
-  if (utilsPinnedMessageId) {
-    try {
-      await ctx.api.editMessageText(
-        config.chatId,
-        utilsPinnedMessageId,
-        messageText,
-        {
-          reply_markup: keyboard,
-          parse_mode: 'Markdown',
-        }
-      );
-      return;
-    } catch (error) {
-      // Message was deleted or doesn't exist, create new one
-      console.log('Failed to edit pinned message, creating new one');
-      utilsPinnedMessageId = null;
-    }
-  }
-
-  // Create new message and pin it
   const message = await ctx.reply(messageText, {
     reply_markup: keyboard,
     parse_mode: 'Markdown',
     message_thread_id: config.utilsTopicId,
   });
 
-  // Store message ID and pin it
+  // Pin the message
   utilsPinnedMessageId = message.message_id;
   try {
     await ctx.api.pinChatMessage(config.chatId, message.message_id);
+    await ctx.reply('✅ Deployment buttons created and pinned!', {
+      message_thread_id: config.utilsTopicId,
+    });
   } catch (error) {
     console.error('Failed to pin message:', error);
+    await ctx.reply('❌ Failed to pin message. Make sure bot has admin rights.', {
+      message_thread_id: config.utilsTopicId,
+    });
   }
 }
 
