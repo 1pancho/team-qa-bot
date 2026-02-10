@@ -49,8 +49,8 @@ export function setupQAHandlers(bot: Bot<BotContext>): void {
         return;
       }
 
-      // Send NEW message with user selection (don't edit the pinned message)
-      await sendUserSelectionMessage(ctx, members, bugId);
+      // Edit the pinned message to show user selection
+      await showUserSelectionKeyboard(ctx, members, bugId);
       await ctx.answerCallbackQuery('Select team member to assign bugs');
     } catch (error) {
       console.error('Error handling bug filing:', error);
@@ -103,12 +103,12 @@ export function setupQAHandlers(bot: Bot<BotContext>): void {
         assignee.username
       );
 
-      // Delete the temporary user selection message
-      try {
-        await ctx.deleteMessage();
-      } catch (error) {
-        console.error('Failed to delete message:', error);
-      }
+      // Restore the original "Filed bugs" button
+      const keyboard = new InlineKeyboard().text('Filed bugs', 'filed_bugs');
+      await ctx.editMessageText('*Bug Tracking*\n\nClick below to assign bugs to team members:', {
+        reply_markup: keyboard,
+        parse_mode: 'Markdown',
+      });
 
       await ctx.answerCallbackQuery('Bug assigned successfully!');
     } catch (error) {
@@ -147,9 +147,9 @@ async function createPinnedBugFilingButton(ctx: BotContext): Promise<void> {
 }
 
 /**
- * Send NEW message with user selection for bug assignment (temporary message)
+ * Edit message to show user selection for bug assignment
  */
-async function sendUserSelectionMessage(
+async function showUserSelectionKeyboard(
   ctx: BotContext,
   members: any[],
   bugId: number
@@ -171,11 +171,10 @@ async function sendUserSelectionMessage(
     }
   });
 
-  // Send NEW message (don't edit the pinned one)
-  await ctx.reply('*Assign bugs to:*\n\nSelect a team member:', {
+  // Edit the pinned message to show user selection
+  await ctx.editMessageText('*Assign bugs to:*\n\nSelect a team member:', {
     reply_markup: keyboard,
     parse_mode: 'Markdown',
-    message_thread_id: config.qaTopicId,
   });
 }
 
