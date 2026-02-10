@@ -4,6 +4,9 @@ import { config } from '../config';
 import { recordDeployment } from '../database/db';
 import { createUserMention, isInTopic, isCallbackFromTopic } from './common.handler';
 
+// Store pinned message ID for Utils topic
+let utilsPinnedMessageId: number | null = null;
+
 /**
  * Setup Utils topic handlers
  */
@@ -71,11 +74,42 @@ async function showDeploymentButtons(ctx: BotContext): Promise<void> {
     .text('UI deployed to IFT', 'deploy_ui')
     .text('Backend deployed to IFT', 'deploy_backend');
 
-  await ctx.reply('*Deployment Options*\n\nChoose deployment type:', {
+  const messageText = '*Deployment Options*\n\nChoose deployment type:';
+
+  // Try to edit existing pinned message if it exists
+  if (utilsPinnedMessageId) {
+    try {
+      await ctx.api.editMessageText(
+        config.chatId,
+        utilsPinnedMessageId,
+        messageText,
+        {
+          reply_markup: keyboard,
+          parse_mode: 'Markdown',
+        }
+      );
+      return;
+    } catch (error) {
+      // Message was deleted or doesn't exist, create new one
+      console.log('Failed to edit pinned message, creating new one');
+      utilsPinnedMessageId = null;
+    }
+  }
+
+  // Create new message and pin it
+  const message = await ctx.reply(messageText, {
     reply_markup: keyboard,
     parse_mode: 'Markdown',
     message_thread_id: config.utilsTopicId,
   });
+
+  // Store message ID and pin it
+  utilsPinnedMessageId = message.message_id;
+  try {
+    await ctx.api.pinChatMessage(config.chatId, message.message_id);
+  } catch (error) {
+    console.error('Failed to pin message:', error);
+  }
 }
 
 /**

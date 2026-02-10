@@ -31,9 +31,7 @@ export function setupRulesHandler(bot: Bot<BotContext>): void {
 ✅ QA workflow coordination
 ✅ Non-sensitive updates
 
-*When in doubt:* Use messenger "Команда" for sensitive topics.
-
-*Full guide:* Check COMMUNICATIONS.md in repository`;
+*When in doubt:* Use messenger "Команда" for sensitive topics.`;
 
     await ctx.reply(rulesMessage, {
       parse_mode: 'Markdown',
