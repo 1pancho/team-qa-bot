@@ -68,7 +68,7 @@ This bot helps our QA team track deployments and manage bug assignments through 
 - General QA workflow coordination
 - Non-sensitive development updates
 
-**When in doubt:** Use private channels or direct messages for sensitive topics.
+**When in doubt:** Use messenger "Команда" for sensitive topics.
 
 ## Best Practices
 
